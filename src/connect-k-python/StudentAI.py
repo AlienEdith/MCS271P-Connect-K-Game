@@ -18,6 +18,23 @@ class StudentAI():
         self.k = k
         self.objB = Board(col,row,k,g)
 
+    def check_opponent_win(self, tempCol, tempRow):
+        # if the move is invalid then check next possible position
+        if(not self.objB.is_valid_move(tempCol, tempRow, True)):
+            return False;
+
+        # if the move is possible temporarily make the move
+        self.objB.make_my_move(tempCol, tempRow, 2)
+
+        # check if 2 wins by this move then we move to that position
+        if(self.objB.is_win() == 2):
+            self.objB.revert_my_move(tempCol, tempRow)
+            return True
+
+        # we remove the temporary move from the board
+        self.objB.revert_my_move(tempCol, tempRow)
+        return False
+
     def get_move(self,move):
         if self.g == 0:
             if(move.col == -1 and move.row == -1):
@@ -29,42 +46,19 @@ class StudentAI():
                 #set recent move of player 2 on board
                 self.objB.make_my_move(move.col, move.row, 2)
             
-                #self.objB.my_show_board();
-                
+                #self.objB.my_show_board();        
                 newCol = -1
                 newRow = -1
-                tempCol = -1
-                tempRow = -1
-                broken = False
 
                 # check around this move if it makes it win for 2
                 for r in range(0, self.row):
                     for c in range(0, self.col):
 
-                        # if the move is invalid then check next possible position
-                        if(not self.objB.is_valid_move(c, r, True)):
-                            continue
+                        if(self.check_opponent_win(c, r)):
+                            self.objB.make_my_move(c, r, 1)
+                            return Move(c,r)
 
-                        # if the move is possible temporarily make the move
-                        self.objB.make_my_move(c, r, 2)
-
-                        # check if 2 wins by this move then we move to that position
-                        if(self.objB.is_win() == 2):
-                            newCol = c
-                            newRow = r
-                            broken = True
-                            break
-
-                        # we remove the temporary move from the board
-                        self.objB.revert_my_move(c, r)
-
-                    # In case it broke out of the loop
-                    if(broken):
-                        self.objB.revert_my_move(c, r)
-                        self.objB.make_my_move(newCol, newRow, 1)
-                        return Move(newCol,newRow)
-
-
+                # else make a random move
                 newCol = randint(0,self.col-1)
                 newRow = randint(0,self.row-1)
 
