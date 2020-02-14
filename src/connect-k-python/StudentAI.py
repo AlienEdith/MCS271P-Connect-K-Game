@@ -9,7 +9,7 @@ class StudentAI():
     row = 0
     k = 0
     g = 0
-    possibleMoves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
+    #possibleMoves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
 
     def __init__(self,col,row,k,g):
         self.g = g
@@ -27,7 +27,7 @@ class StudentAI():
             
             else:
                 #set recent move of player 2 on board
-                self.objB.my_make_move(move.col, move.row, 2)
+                self.objB.make_my_move(move.col, move.row, 2)
             
                 #self.objB.my_show_board();
                 
@@ -46,7 +46,7 @@ class StudentAI():
                             continue
 
                         # if the move is possible temporarily make the move
-                        self.objB.my_make_move(c, r, 2)
+                        self.objB.make_my_move(c, r, 2)
 
                         # check if 2 wins by this move then we move to that position
                         if(self.objB.is_win() == 2):
@@ -56,12 +56,12 @@ class StudentAI():
                             break
 
                         # we remove the temporary move from the board
-                        self.objB.revert_move(c, r)
+                        self.objB.revert_my_move(c, r)
 
-                    # In case it broke out of loop
+                    # In case it broke out of the loop
                     if(broken):
-                        self.objB.revert_move(c, r)
-                        self.objB.my_make_move(newCol, newRow, 1)
+                        self.objB.revert_my_move(c, r)
+                        self.objB.make_my_move(newCol, newRow, 1)
                         return Move(newCol,newRow)
 
 
@@ -72,7 +72,7 @@ class StudentAI():
                     newCol = randint(0,self.col-1)
                     newRow = randint(0,self.row-1)
                
-            self.objB.my_make_move(newCol, newRow, 1)
+            self.objB.make_my_move(newCol, newRow, 1)
             
             return Move(newCol,newRow)
         else:

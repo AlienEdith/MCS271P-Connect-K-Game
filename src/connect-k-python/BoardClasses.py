@@ -82,13 +82,13 @@ class Board:
         return True
 
 
-    def my_make_move(self,col,row,player):
+    def make_my_move(self,col,row,player):
         self.board[row][col] = player
 
-    def revert_move(self,col,row):
+    def revert_my_move(self,col,row):
         self.board[row][col] = 0
 
-    def my_show_board(self):
+    def show_my_board(self):
         print("#####")
         for i in range(0, self.row): 
             print(self.board[i])
