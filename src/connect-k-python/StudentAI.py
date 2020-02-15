@@ -2,6 +2,7 @@ from random import randint
 from BoardClasses import Move
 from BoardClasses import Board
 import math
+from functools import cmp_to_key
 #The following part should be completed by students.
 #Students can modify anything except the class name and exisiting functions and varibles.
 class StudentAI():
@@ -189,7 +190,6 @@ class StudentAI():
                 self.possibleMovesForGravity[move.col] -= 1
                 # print(move.col, self.possibleMovesForGravity[move.col])
                 
-                newCol = -1
                 # print(self.possibleMovesForGravity)
                 for c in range(0, self.col):
                     if(self.possibleMovesForGravity[c] < 0):
@@ -205,10 +205,11 @@ class StudentAI():
                         #print("Poss Move: ", self.possibleMovesForGravity)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
-                self.get_heuristic_moves()
+                # sort by the evaluation result
+                evalList = self.get_heuristic_moves()
+                evalList.sort(key = lambda evalList: -evalList[1])
 
-                for i in range(0, 51):
-                    c = randint(0,self.col-1)
+                for c in range(0, len(evalList)):
 
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
