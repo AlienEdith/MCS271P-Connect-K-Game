@@ -43,7 +43,7 @@ class StudentAI():
 
     def add_adj_cells(self, move):
         # check all the adjecent cells of the move
-        for pm in possibleMoves:
+        for pm in self.possibleMoves:
             return 0
             # if cell is valid i.e. empty then add it to list
 
