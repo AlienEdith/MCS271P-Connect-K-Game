@@ -3,6 +3,26 @@ from BoardClasses import Move
 from BoardClasses import Board
 import math
 from functools import cmp_to_key
+
+class MyBoard(Board):
+    def __init__(self,col,row,k,g):
+        Board.__init__(self,col,row,k,g)
+
+    def make_my_move(self,col,row,player):
+        self.board[row][col] = player
+
+    def revert_my_move(self,col,row):
+        self.board[row][col] = 0
+
+    def show_my_board(self):
+        print("#####")
+        for i in range(0, self.row): 
+            print(self.board[i])
+        print("#####")
+
+    def get_my_board_val(self, col, row):
+        return self.board[row][col]
+
 #The following part should be completed by students.
 #Students can modify anything except the class name and exisiting functions and varibles.
 class StudentAI():
@@ -17,7 +37,7 @@ class StudentAI():
         self.col = col
         self.row = row
         self.k = k
-        self.objB = Board(col,row,k,g)
+        self.objB = MyBoard(col,row,k,g)
 
         self.possibleMovesForGravity = []
         for c in range(0, self.col):
@@ -121,7 +141,7 @@ class StudentAI():
         for i in range(0, self.col):
             list_return.insert(i, (i,heuristic_val[i]) )
 
-        print(list_return)
+        #print(list_return)
         return list_return
 
 

@@ -81,21 +81,6 @@ class Board:
             return False
         return True
 
-
-    def make_my_move(self,col,row,player):
-        self.board[row][col] = player
-
-    def revert_my_move(self,col,row):
-        self.board[row][col] = 0
-
-    def show_my_board(self):
-        print("#####")
-        for i in range(0, self.row): 
-            print(self.board[i])
-        print("#####")
-
-    def get_my_board_val(self, col, row):
-        return self.board[row][col]
         
 class Move:
     def __init__(self,col,row,args=None):
