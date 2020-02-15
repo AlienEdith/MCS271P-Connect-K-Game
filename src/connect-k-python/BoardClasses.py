@@ -94,6 +94,9 @@ class Board:
             print(self.board[i])
         print("#####")
 
+    def get_my_board_val(self, col, row):
+        return self.board[row][col]
+        
 class Move:
     def __init__(self,col,row,args=None):
         if type(args) is str:
