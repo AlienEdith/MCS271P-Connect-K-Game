@@ -101,6 +101,10 @@ class StudentAI():
             if(move.col == -1 and move.row == -1):
                 # take middle element so that increases connect on many sides
                 newCol = math.ceil((self.col-1)/2)
+                self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
+                self.possibleMovesForGravity[newCol] -= 1
+                return Move(newCol, self.possibleMovesForGravity[newCol] + 1)
+
             else:
                 #print("Opponent Move: ", move.col, self.possibleMovesForGravity[move.col])
                 # print("Opponent Move: ", move.col, move.row)
@@ -126,13 +130,18 @@ class StudentAI():
                         print("Poss Move: ", self.possibleMovesForGravity)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
-                # for c in
-                for c in range(0, self.col):
+                
+                for i in range(0, 51):
+                    c = randint(0,self.col-1)
+
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
 
+                    print("c: ", c)
+                    print("Befroe Poss Move: ", self.possibleMovesForGravity)
                     self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                     self.possibleMovesForGravity[c] -= 1
+                    print("After Poss Move: ", self.possibleMovesForGravity)
 
                     if(self.check_next_win(c, self.possibleMovesForGravity[c], 2)):
                         print("Here", c)
@@ -144,11 +153,14 @@ class StudentAI():
                     print("Poss Move: ", self.possibleMovesForGravity)
                     return Move(c, self.possibleMovesForGravity[c]+1)
 
+                # when got out of loop
+                c = randint(0,self.col-1)
+                while(not self.objB.is_valid_move(c, self.possibleMovesForGravity[c])):
+                    c = randint(0,self.col-1)
 
-            # self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
-            # self.possibleMovesForGravity[newCol] -= 1
-            # print("My Move: ", newCol, self.possibleMovesForGravity[newCol]+1)
-            
-            # return Move(newCol, self.possibleMovesForGravity[newCol]+1)
+                self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
+                self.possibleMovesForGravity[c] -= 1
+
+                return Move(c, self.possibleMovesForGravity[c]+1)
+
                 
-        return Move(randint(0,self.col-1),0)
