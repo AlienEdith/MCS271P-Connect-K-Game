@@ -95,15 +95,15 @@ class StudentAI():
                 newCol = math.ceil((self.col-1)/2)
             else:
                 #print("Opponent Move: ", move.col, self.possibleMovesForGravity[move.col])
-                print("Opponent Move: ", move.col, move.row)
+                # print("Opponent Move: ", move.col, move.row)
 
                 self.objB.make_my_move(move.col, self.possibleMovesForGravity[move.col], 2)
                 #print("Make Opponent Move")
                 self.possibleMovesForGravity[move.col] -= 1
-                print(move.col, self.possibleMovesForGravity[move.col])
+                # print(move.col, self.possibleMovesForGravity[move.col])
                 
                 newCol = -1
-                print(self.possibleMovesForGravity)
+                # print(self.possibleMovesForGravity)
                 for c in range(0, self.col):
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
@@ -117,14 +117,32 @@ class StudentAI():
                         print("My Move: ", c, self.possibleMovesForGravity[c]+1)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
-                newCol = randint(0,self.col-1)
-                while(not self.objB.is_valid_move(newCol, self.possibleMovesForGravity[newCol], True)):
-                    newCol = randint(0,self.col-1)
+                # for c in
+                for c in range(0, self.col):
+                    if(self.possibleMovesForGravity[c] < 0):
+                        continue
 
-            self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
-            self.possibleMovesForGravity[newCol] -= 1
-            print("My Move: ", newCol, self.possibleMovesForGravity[newCol]+1)
+                    self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
+                    self.possibleMovesForGravity[c] -= 1
+
+                    if(self.check_next_win(c, self.possibleMovesForGravity[c], 2)):
+                        print("Here", c)
+                        self.possibleMovesForGravity[c] += 1
+                        self.objB.revert_my_move(c, self.possibleMovesForGravity[c])
+                        continue
+
+                    print("Poss Move: ", self.possibleMovesForGravity)
+                
+                    print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                    return Move(c, self.possibleMovesForGravity[c]+1)
+
+
+
+
+            # self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
+            # self.possibleMovesForGravity[newCol] -= 1
+            # print("My Move: ", newCol, self.possibleMovesForGravity[newCol]+1)
             
-            return Move(newCol, self.possibleMovesForGravity[newCol]+1)
+            # return Move(newCol, self.possibleMovesForGravity[newCol]+1)
                 
         return Move(randint(0,self.col-1),0)
