@@ -9,7 +9,7 @@ class StudentAI():
     row = 0
     k = 0
     g = 0
-    #possibleMoves = [(1,0), (-1,0), (0,1), (0,-1), (1,1), (-1,-1), (1,-1), (-1,1)]
+    possibleMovesForGravity = []
 
     def __init__(self,col,row,k,g):
         self.g = g
@@ -17,11 +17,13 @@ class StudentAI():
         self.row = row
         self.k = k
         self.objB = Board(col,row,k,g)
+        for c in range(0, self.col):
+            self.possibleMovesForGravity.insert(c, row-1)
 
-    def check_opponent_win(self, tempCol, tempRow):
+    def check_opponent_win(self, tempCol, tempRow):        
         # if the move is invalid then check next possible position
         if(not self.objB.is_valid_move(tempCol, tempRow, True)):
-            return False;
+            return False
 
         # if the move is possible temporarily make the move
         self.objB.make_my_move(tempCol, tempRow, 2)
@@ -69,5 +71,42 @@ class StudentAI():
             self.objB.make_my_move(newCol, newRow, 1)
             
             return Move(newCol,newRow)
-        else:
-            return Move(randint(0,self.col-1),0)
+
+        elif self.g == 1:
+            if(move.col == -1 and move.row == -1):
+                # take middle element so that increases connect on many sides
+                newCol = math.ceil((self.col-1)/2)
+            else:
+                print("Opponent Move: ", move.col, self.possibleMovesForGravity[move.col])
+                print("Opponent Move: ", move.col, move.row)
+
+                self.objB.make_my_move(move.col, self.possibleMovesForGravity[move.col], 2)
+                print("Make Opponent Move")
+                self.possibleMovesForGravity[move.col] -= 1
+                print(move.col, self.possibleMovesForGravity[move.col])
+                
+                newCol = -1
+
+                for c in range(0, self.col):
+                    if(self.possibleMovesForGravity[c] < 0):
+                        continue
+                    
+                    print(c, self.possibleMovesForGravity[c])
+                    print(self.check_opponent_win(c, self.possibleMovesForGravity[c]))
+
+                    if(self.check_opponent_win(c, self.possibleMovesForGravity[c])):
+                        self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
+                        self.possibleMovesForGravity[c] -= 1
+                        print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                        return Move(c, self.possibleMovesForGravity[c]+1)
+                
+                newCol = randint(0,self.col-1)
+                while(not self.objB.is_valid_move(newCol, self.possibleMovesForGravity[newCol], True)):
+                    newCol = randint(0,self.col-1)
+
+            self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
+            self.possibleMovesForGravity[newCol] -= 1
+            print("My Move: ", newCol, self.possibleMovesForGravity[newCol]+1)
+            return Move(newCol, self.possibleMovesForGravity[newCol]+1)
+                
+        return Move(randint(0,self.col-1),0)
