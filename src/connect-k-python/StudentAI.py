@@ -41,12 +41,87 @@ class StudentAI():
         self.objB.revert_my_move(tempCol, tempRow)
         return False
 
-    def get_heuristic_moves():
+    def get_heuristic_moves(self):
         heuristic_val = []
 
         for c in range(0,self.col):
+            heuristic_val.insert(c, 0)
             r = self.possibleMovesForGravity[c]
-            
+            if(r<0):
+                continue
+            #print(c, r)
+            # Calculate left and right of this position and if they are valid
+            left = self.objB.is_valid_move(c-1, r, False)
+            right = self.objB.is_valid_move(c+1, r, False)
+            #print(left, right)
+
+            if(left and right):
+                if(self.objB.get_my_board_val(c-1, r)==2 and self.objB.get_my_board_val(c+1, r)==2):
+                    heuristic_val[c] += 2
+
+            if(left and c>=(self.k-1) ):
+                #print("l1")
+                #print(self.objB.get_my_board_val(c-1, r))
+                if(self.objB.get_my_board_val(c-1, r) == 2):
+                    #print("l2")
+                    heuristic_val[c] += 1
+
+            if(right and ((self.col-c)>=self.k) ):
+                #print("r1")
+                #print(self.objB.get_my_board_val(c+1, r))
+                if(self.objB.get_my_board_val(c+1, r) == 2):
+                    #print("r2")
+                    heuristic_val[c] += 1
+
+            # Left-Cell-Right
+            # Calculate top-left and bottom-right of this position and if they are valid
+            top_left = False
+            bottom_right = False
+
+            if(r+self.col-c>=self.k):
+                top_left = self.objB.is_valid_move(c-1, r-1, False)
+
+                if(top_left and self.objB.get_my_board_val(c-1, r-1) == 2):
+                    heuristic_val[c] += 2
+
+                bottom_right = self.objB.is_valid_move(c+1, r+1, False)
+
+                if(bottom_right and self.objB.get_my_board_val(c+1, r+1) == 2):
+                    heuristic_val[c] += 2
+
+            # Both
+            if(top_left and bottom_right):
+                if(self.objB.get_my_board_val(c-1, r-1)==2 and self.objB.get_my_board_val(c+1, r+1)==2):
+                    heuristic_val[c] += 3
+
+
+            # Calculate top-right and bottom-left of this position and if they are valid
+            top_right = False
+            bottom_left = False
+
+            if(c+r >= self.k-1):
+                top_right = self.objB.is_valid_move(c+1, r-1, False)
+
+                if(top_right and self.objB.get_my_board_val(c+1, r-1) == 2):
+                    heuristic_val[c] += 2
+
+                bottom_left = self.objB.is_valid_move(c-1, r+1, False)
+
+                if(bottom_left and self.objB.get_my_board_val(c-1, r+1) == 2):
+                    heuristic_val[c] += 2
+
+            if(top_right and bottom_left):
+                if(self.objB.get_my_board_val(c+1, r-1)==2 and self.objB.get_my_board_val(c-1, r+1)==2):
+                    heuristic_val[c] += 3
+
+        
+
+        list_return = []
+        for i in range(0, self.col):
+            list_return.insert(i, (i,heuristic_val[i]) )
+
+        print(list_return)
+        return list_return
 
 
     def add_adj_cells(self, move):
@@ -126,31 +201,32 @@ class StudentAI():
                     if(self.check_next_win(c, self.possibleMovesForGravity[c], 2) | self.check_next_win(c, self.possibleMovesForGravity[c], 1)):
                         self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                         self.possibleMovesForGravity[c] -= 1
-                        print("My Move: ", c, self.possibleMovesForGravity[c]+1)
-                        print("Poss Move: ", self.possibleMovesForGravity)
+                        #print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                        #print("Poss Move: ", self.possibleMovesForGravity)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
-                
+                self.get_heuristic_moves()
+
                 for i in range(0, 51):
                     c = randint(0,self.col-1)
 
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
 
-                    print("c: ", c)
-                    print("Befroe Poss Move: ", self.possibleMovesForGravity)
+                    #print("c: ", c)
+                    #print("Befroe Poss Move: ", self.possibleMovesForGravity)
                     self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                     self.possibleMovesForGravity[c] -= 1
-                    print("After Poss Move: ", self.possibleMovesForGravity)
+                    #print("After Poss Move: ", self.possibleMovesForGravity)
 
                     if(self.check_next_win(c, self.possibleMovesForGravity[c], 2)):
-                        print("Here", c)
+                        #print("Here", c)
                         self.possibleMovesForGravity[c] += 1
                         self.objB.revert_my_move(c, self.possibleMovesForGravity[c])
                         continue
 
-                    print("My Move: ", c, self.possibleMovesForGravity[c]+1)
-                    print("Poss Move: ", self.possibleMovesForGravity)
+                    #print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                    #print("Poss Move: ", self.possibleMovesForGravity)
                     return Move(c, self.possibleMovesForGravity[c]+1)
 
                 # when got out of loop
