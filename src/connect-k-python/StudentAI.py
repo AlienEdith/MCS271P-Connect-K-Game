@@ -41,6 +41,14 @@ class StudentAI():
         self.objB.revert_my_move(tempCol, tempRow)
         return False
 
+    def get_heuristic_moves():
+        heuristic_val = []
+
+        for c in range(0,self.col):
+            r = self.possibleMovesForGravity[c]
+            
+
+
     def add_adj_cells(self, move):
         # check all the adjecent cells of the move
         for pm in self.possibleMoves:
@@ -115,6 +123,7 @@ class StudentAI():
                         self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                         self.possibleMovesForGravity[c] -= 1
                         print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                        print("Poss Move: ", self.possibleMovesForGravity)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
                 # for c in
@@ -131,12 +140,9 @@ class StudentAI():
                         self.objB.revert_my_move(c, self.possibleMovesForGravity[c])
                         continue
 
-                    print("Poss Move: ", self.possibleMovesForGravity)
-                
                     print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                    print("Poss Move: ", self.possibleMovesForGravity)
                     return Move(c, self.possibleMovesForGravity[c]+1)
-
-
 
 
             # self.objB.make_my_move(newCol, self.possibleMovesForGravity[newCol], 1)
