@@ -229,8 +229,8 @@ class StudentAI():
                 evalList = self.get_heuristic_moves()
                 evalList.sort(key = lambda evalList: -evalList[1])
 
-                for c in range(0, len(evalList)):
-
+                for i in range(0, len(evalList)):
+                    c = evalList[i][0]
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
 
