@@ -24,16 +24,16 @@ class StudentAI():
 
         self.adj_to_opponent_move = set()
 
-    def check_opponent_win(self, tempCol, tempRow):        
+    def check_next_win(self, tempCol, tempRow, player):        
         # if the move is invalid then check next possible position
         if(not self.objB.is_valid_move(tempCol, tempRow, True)):
             return False
 
         # if the move is possible temporarily make the move
-        self.objB.make_my_move(tempCol, tempRow, 2)
+        self.objB.make_my_move(tempCol, tempRow, player)
 
-        # check if 2 wins by this move then we move to that position
-        if(self.objB.is_win() == 2):
+        # check if the player wins by this move then we move to that position
+        if(self.objB.is_win() == player):
             self.objB.revert_my_move(tempCol, tempRow)
             return True
 
@@ -73,7 +73,7 @@ class StudentAI():
                     for c in range(0, self.col):
 
                         # if this move makes player2 to win then move to that position
-                        if(self.check_opponent_win(c, r)):
+                        if(self.check_next_win(c, r, 2) | self.check_next_win(c, r, 1)):
                             self.objB.make_my_move(c, r, 1)
                             return Move(c,r)
 
@@ -111,7 +111,7 @@ class StudentAI():
                     #print(c, self.possibleMovesForGravity[c])
                     #print(self.check_opponent_win(c, self.possibleMovesForGravity[c]))
 
-                    if(self.check_opponent_win(c, self.possibleMovesForGravity[c])):
+                    if(self.check_next_win(c, self.possibleMovesForGravity[c], 2) | self.check_next_win(c, self.possibleMovesForGravity[c], 1)):
                         self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                         self.possibleMovesForGravity[c] -= 1
                         print("My Move: ", c, self.possibleMovesForGravity[c]+1)
