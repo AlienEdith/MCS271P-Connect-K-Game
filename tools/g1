@@ -1,0 +1,15 @@
+#!/bin/bash
+
+date
+for run in {1..100}
+do
+  python3 AI_runner.py 5 5 4 1 l ../src/connect-k-python/main.py ./SampleAIs/PoorAI_v2.pyc >> 5541_first_result
+done
+date
+
+date
+for run in {1..100}
+do
+  python3 AI_runner.py 5 5 4 1 l ./SampleAIs/PoorAI_v2.pyc ../src/connect-k-python/main.py >> 5541_second_result
+done
+date
