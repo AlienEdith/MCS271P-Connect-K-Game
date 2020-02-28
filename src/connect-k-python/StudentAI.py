@@ -80,6 +80,11 @@ class StudentAI():
                 if(self.objB.get_my_board_val(c-1, r)==2 and self.objB.get_my_board_val(c+1, r)==2):
                     heuristic_val[c] += 2
 
+                if(self.objB.get_my_board_val(c-1, r)==1 and self.objB.get_my_board_val(c+1, r)==1):
+                    heuristic_val[c] += 3
+                    
+
+
             if(left and c>=(self.k-1) ):
                 #print("l1")
                 #print(self.objB.get_my_board_val(c-1, r))
@@ -87,12 +92,20 @@ class StudentAI():
                     #print("l2")
                     heuristic_val[c] += 1
 
+                if(self.objB.get_my_board_val(c-1, r) == 1):
+                    #print("l2")
+                    heuristic_val[c] += 2
+
             if(right and ((self.col-c)>=self.k) ):
                 #print("r1")
                 #print(self.objB.get_my_board_val(c+1, r))
                 if(self.objB.get_my_board_val(c+1, r) == 2):
                     #print("r2")
                     heuristic_val[c] += 1
+
+                if(self.objB.get_my_board_val(c+1, r) == 1):
+                    #print("r2")
+                    heuristic_val[c] += 2
 
             # Left-Cell-Right
             # Calculate top-left and bottom-right of this position and if they are valid
@@ -105,15 +118,24 @@ class StudentAI():
                 if(top_left and self.objB.get_my_board_val(c-1, r-1) == 2):
                     heuristic_val[c] += 2
 
+                if(top_left and self.objB.get_my_board_val(c-1, r-1) == 1):
+                    heuristic_val[c] += 3
+
                 bottom_right = self.objB.is_valid_move(c+1, r+1, False)
 
                 if(bottom_right and self.objB.get_my_board_val(c+1, r+1) == 2):
                     heuristic_val[c] += 2
 
+                if(bottom_right and self.objB.get_my_board_val(c+1, r+1) == 1):
+                    heuristic_val[c] += 3
+
             # Both
             if(top_left and bottom_right):
                 if(self.objB.get_my_board_val(c-1, r-1)==2 and self.objB.get_my_board_val(c+1, r+1)==2):
                     heuristic_val[c] += 3
+
+                if(self.objB.get_my_board_val(c-1, r-1)==1 and self.objB.get_my_board_val(c+1, r+1)==1):
+                    heuristic_val[c] += 4
 
 
             # Calculate top-right and bottom-left of this position and if they are valid
@@ -126,14 +148,23 @@ class StudentAI():
                 if(top_right and self.objB.get_my_board_val(c+1, r-1) == 2):
                     heuristic_val[c] += 2
 
+                if(top_right and self.objB.get_my_board_val(c+1, r-1) == 1):
+                    heuristic_val[c] += 3
+
                 bottom_left = self.objB.is_valid_move(c-1, r+1, False)
 
                 if(bottom_left and self.objB.get_my_board_val(c-1, r+1) == 2):
                     heuristic_val[c] += 2
 
+                if(bottom_left and self.objB.get_my_board_val(c-1, r+1) == 1):
+                    heuristic_val[c] += 3
+
             if(top_right and bottom_left):
                 if(self.objB.get_my_board_val(c+1, r-1)==2 and self.objB.get_my_board_val(c-1, r+1)==2):
                     heuristic_val[c] += 3
+
+                if(self.objB.get_my_board_val(c+1, r-1)==1 and self.objB.get_my_board_val(c-1, r+1)==1):
+                    heuristic_val[c] += 4
 
         
 
@@ -146,35 +177,13 @@ class StudentAI():
 
 
     def add_adj_cells(self, move):
-        max_score = 0
-        max_score_row = 0
-        max_score_col = 0
-        # check all the cells
-        for row in range(0, self.row):
-            for col in range(0, self.col):
-                if(not self.objB.is_valid_move(col, row, True)):     
-                    continue
-                
-                # calculate the heuristic of how good is this place based on 
-                # h(c) = number of adjecent cells with 1 + number of adjecent cells with 2
-                score = 0
-                for adj in self.possibleMoves:
-                    tmpCol = col + adj[0]
-                    tmpRow = row + adj[1]
-                    if(not self.objB.is_valid_move(tmpCol, tmpRow, False)):     
-                        continue
+        # check all the adjecent cells of the move
+        for pm in self.possibleMoves:
+            return 0
+            # if cell is valid i.e. empty then add it to list
 
-                    if(self.objB.get_my_board_val(tmpCol, tmpRow) == 1 or self.objB.get_my_board_val(tmpCol, tmpRow) == 2):
-                        score += 1
-
-                if(score > max_score):
-                    max_score = score
-                    max_score_row = row
-                    max_score_col = col
-        
-        return max_score_col, max_score_row
-
-
+            # also calculate the heuristic of how good is this place based on 
+            # h(c) = number of adjecent cells with 1 + number of adjecent cells with 2
 
     def get_move(self,move):
         if self.g == 0:
@@ -188,7 +197,10 @@ class StudentAI():
             else:
                 #set recent move of player 2 on board
                 self.objB.make_my_move(move.col, move.row, 2)
-                
+
+                # add all adjecent cells which are empty to possible moves to choose from
+                self.add_adj_cells(move)
+            
                 #self.objB.my_show_board();        
             
                 # check around this move if it makes it win for 2
@@ -200,18 +212,16 @@ class StudentAI():
                             self.objB.make_my_move(c, r, 1)
                             return Move(c,r)
 
-                # choose the cell that block and connect the most other cells
-                newCol, newRow = self.add_adj_cells(move)
-
                 # else if no such move makes player2 to win then make a random move
-                # newCol = randint(0,self.col-1)
-                # newRow = randint(0,self.row-1)
+                newCol = randint(0,self.col-1)
+                newRow = randint(0,self.row-1)
 
-                # while(not self.objB.is_valid_move(newCol, newRow, True)):
-                    # newCol = randint(0,self.col-1)
-                    # newRow = randint(0,self.row-1)
-                        
+                while(not self.objB.is_valid_move(newCol, newRow, True)):
+                    newCol = randint(0,self.col-1)
+                    newRow = randint(0,self.row-1)
+            
             self.objB.make_my_move(newCol, newRow, 1)
+            
             return Move(newCol,newRow)
 
         elif self.g == 1:
@@ -223,17 +233,27 @@ class StudentAI():
                 return Move(newCol, self.possibleMovesForGravity[newCol] + 1)
 
             else:
+                #print("Opponent Move: ", move.col, self.possibleMovesForGravity[move.col])
+                # print("Opponent Move: ", move.col, move.row)
 
                 self.objB.make_my_move(move.col, self.possibleMovesForGravity[move.col], 2)
+                #print("Make Opponent Move")
                 self.possibleMovesForGravity[move.col] -= 1
+                # print(move.col, self.possibleMovesForGravity[move.col])
                 
+                # print(self.possibleMovesForGravity)
                 for c in range(0, self.col):
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
                     
+                    #print(c, self.possibleMovesForGravity[c])
+                    #print(self.check_opponent_win(c, self.possibleMovesForGravity[c]))
+
                     if(self.check_next_win(c, self.possibleMovesForGravity[c], 2) | self.check_next_win(c, self.possibleMovesForGravity[c], 1)):
                         self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                         self.possibleMovesForGravity[c] -= 1
+                        #print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                        #print("Poss Move: ", self.possibleMovesForGravity)
                         return Move(c, self.possibleMovesForGravity[c]+1)
                 
                 # sort by the evaluation result
@@ -245,14 +265,20 @@ class StudentAI():
                     if(self.possibleMovesForGravity[c] < 0):
                         continue
 
+                    #print("c: ", c)
+                    #print("Befroe Poss Move: ", self.possibleMovesForGravity)
                     self.objB.make_my_move(c, self.possibleMovesForGravity[c], 1)
                     self.possibleMovesForGravity[c] -= 1
+                    #print("After Poss Move: ", self.possibleMovesForGravity)
 
                     if(self.check_next_win(c, self.possibleMovesForGravity[c], 2)):
+                        #print("Here", c)
                         self.possibleMovesForGravity[c] += 1
                         self.objB.revert_my_move(c, self.possibleMovesForGravity[c])
                         continue
 
+                    #print("My Move: ", c, self.possibleMovesForGravity[c]+1)
+                    #print("Poss Move: ", self.possibleMovesForGravity)
                     return Move(c, self.possibleMovesForGravity[c]+1)
 
                 # when got out of loop
