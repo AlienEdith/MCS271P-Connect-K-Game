@@ -177,13 +177,33 @@ class StudentAI():
 
 
     def add_adj_cells(self, move):
-        # check all the adjecent cells of the move
-        for pm in self.possibleMoves:
-            return 0
-            # if cell is valid i.e. empty then add it to list
+        max_score = 0
+        max_score_row = 0
+        max_score_col = 0
+        # check all the cells
+        for row in range(0, self.row):
+            for col in range(0, self.col):
+                if(not self.objB.is_valid_move(col, row, True)):     
+                    continue
 
-            # also calculate the heuristic of how good is this place based on 
-            # h(c) = number of adjecent cells with 1 + number of adjecent cells with 2
+                # calculate the heuristic of how good is this place based on 
+                # h(c) = number of adjecent cells with 1 + number of adjecent cells with 2
+                score = 0
+                for adj in self.possibleMoves:
+                    tmpCol = col + adj[0]
+                    tmpRow = row + adj[1]
+                    if(not self.objB.is_valid_move(tmpCol, tmpRow, False)):     
+                        continue
+
+                    if(self.objB.get_my_board_val(tmpCol, tmpRow) == 1 or self.objB.get_my_board_val(tmpCol, tmpRow) == 2):
+                        score += 1
+
+                if(score > max_score):
+                    max_score = score
+                    max_score_row = row
+                    max_score_col = col
+
+        return max_score_col, max_score_row
 
     def get_move(self,move):
         if self.g == 0:
@@ -199,7 +219,7 @@ class StudentAI():
                 self.objB.make_my_move(move.col, move.row, 2)
 
                 # add all adjecent cells which are empty to possible moves to choose from
-                self.add_adj_cells(move)
+                newCol, newRow = self.add_adj_cells(move)
             
                 #self.objB.my_show_board();        
             
@@ -212,13 +232,13 @@ class StudentAI():
                             self.objB.make_my_move(c, r, 1)
                             return Move(c,r)
 
-                # else if no such move makes player2 to win then make a random move
-                newCol = randint(0,self.col-1)
-                newRow = randint(0,self.row-1)
+                # # else if no such move makes player2 to win then make a random move
+                # newCol = randint(0,self.col-1)
+                # newRow = randint(0,self.row-1)
 
-                while(not self.objB.is_valid_move(newCol, newRow, True)):
-                    newCol = randint(0,self.col-1)
-                    newRow = randint(0,self.row-1)
+                # while(not self.objB.is_valid_move(newCol, newRow, True)):
+                #     newCol = randint(0,self.col-1)
+                #     newRow = randint(0,self.row-1)
             
             self.objB.make_my_move(newCol, newRow, 1)
             
