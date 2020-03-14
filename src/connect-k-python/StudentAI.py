@@ -81,7 +81,7 @@ class StudentAI():
                     heuristic_val[c] += 2
 
                 if(self.objB.get_my_board_val(c-1, r)==1 and self.objB.get_my_board_val(c+1, r)==1):
-                    heuristic_val[c] += 3
+                    heuristic_val[c] += 4
                     
 
 
@@ -94,7 +94,7 @@ class StudentAI():
 
                 if(self.objB.get_my_board_val(c-1, r) == 1):
                     #print("l2")
-                    heuristic_val[c] += 2
+                    heuristic_val[c] += 3
 
             if(right and ((self.col-c)>=self.k) ):
                 #print("r1")
@@ -105,7 +105,7 @@ class StudentAI():
 
                 if(self.objB.get_my_board_val(c+1, r) == 1):
                     #print("r2")
-                    heuristic_val[c] += 2
+                    heuristic_val[c] += 3
 
             # Left-Cell-Right
             # Calculate top-left and bottom-right of this position and if they are valid
@@ -119,7 +119,7 @@ class StudentAI():
                     heuristic_val[c] += 2
 
                 if(top_left and self.objB.get_my_board_val(c-1, r-1) == 1):
-                    heuristic_val[c] += 3
+                    heuristic_val[c] += 4
 
                 bottom_right = self.objB.is_valid_move(c+1, r+1, False)
 
@@ -127,7 +127,7 @@ class StudentAI():
                     heuristic_val[c] += 2
 
                 if(bottom_right and self.objB.get_my_board_val(c+1, r+1) == 1):
-                    heuristic_val[c] += 3
+                    heuristic_val[c] += 4
 
             # Both
             if(top_left and bottom_right):
@@ -135,7 +135,7 @@ class StudentAI():
                     heuristic_val[c] += 3
 
                 if(self.objB.get_my_board_val(c-1, r-1)==1 and self.objB.get_my_board_val(c+1, r+1)==1):
-                    heuristic_val[c] += 4
+                    heuristic_val[c] += 5
 
 
             # Calculate top-right and bottom-left of this position and if they are valid
@@ -149,7 +149,7 @@ class StudentAI():
                     heuristic_val[c] += 2
 
                 if(top_right and self.objB.get_my_board_val(c+1, r-1) == 1):
-                    heuristic_val[c] += 3
+                    heuristic_val[c] += 4
 
                 bottom_left = self.objB.is_valid_move(c-1, r+1, False)
 
@@ -157,14 +157,14 @@ class StudentAI():
                     heuristic_val[c] += 2
 
                 if(bottom_left and self.objB.get_my_board_val(c-1, r+1) == 1):
-                    heuristic_val[c] += 3
+                    heuristic_val[c] += 4
 
             if(top_right and bottom_left):
                 if(self.objB.get_my_board_val(c+1, r-1)==2 and self.objB.get_my_board_val(c-1, r+1)==2):
                     heuristic_val[c] += 3
 
                 if(self.objB.get_my_board_val(c+1, r-1)==1 and self.objB.get_my_board_val(c-1, r+1)==1):
-                    heuristic_val[c] += 4
+                    heuristic_val[c] += 5
 
         
 
